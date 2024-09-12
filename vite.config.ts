@@ -19,8 +19,8 @@ function scandit(options: VitePluginScanditOptions): Plugin {
   let config: ConfigEnv;
 
   function setupServer(server: ViteDevServer | PreviewServerForHook): void {
-    server.config.preview.port = process.env.PORT || 8080;
-    server.config.server.port = process.env.PORT || 8080;
+    server.config.preview.port = Number(process.env.PORT) || 8080;
+    server.config.server.port = Number(process.env.PORT) || 8080;
     server.middlewares.use((_req, res, next) => {
       res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
       res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
@@ -59,8 +59,8 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        assetFileNames: '[name].[ext]',
-        chunkFileNames: '[name].[ext]',
+        assetFileNames: 'assets/[name][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: '[name].js',
       },
     },
@@ -68,14 +68,27 @@ export default defineConfig({
   envPrefix: 'SCANDIT',
   plugins: [
     viteStaticCopy({
-      targets: ['core', 'id'].map((module) => ({
-        src: `./node_modules/scandit-web-datacapture-${module}/build/engine/*`,
-        dest: './library/engine',
-      })),
+      targets: [
+        ...['core', 'id'].map((module) => ({
+          src: `./node_modules/scandit-web-datacapture-${module}/build/engine/*`,
+          dest: './library/engine',
+        })),
+        {
+          src: './node_modules/html2canvas/dist/html2canvas.min.js',
+          dest: './library',
+        },
+        {
+          src: './node_modules/jspdf/dist/jspdf.umd.min.js',
+          dest: './library',
+        },
+      ],
     }),
     scandit({
       licenseKey: process.env.SCANDIT_LICENSE_KEY ?? '',
       licenseKeyPlaceholder: '-- ENTER YOUR SCANDIT LICENSE KEY HERE --',
     }),
   ],
+  optimizeDeps: {
+    include: ['html2canvas', 'jspdf'],
+  },
 });

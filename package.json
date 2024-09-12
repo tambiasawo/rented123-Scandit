@@ -1,9 +1,9 @@
 {
-  "name": "web-idcapture-extended-sample",
-  "displayName": "WebIdCaptureExtendedSample",
+  "name": "Scandit ID Scan",
+  "displayName": "Scandit ID Scan",
   "version": "1.0.0",
   "author": "Scandit",
-  "description": "Examples of how to integrate ID Capture into your application.",
+  "description": "ID verification tool",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,6 @@
     "format": "prettier --write ./src"
   },
   "dependencies": {
-    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "scandit-web-datacapture-core": "6.24.0",
     "scandit-web-datacapture-id": "6.24.0"

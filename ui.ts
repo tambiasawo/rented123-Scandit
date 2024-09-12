@@ -1,6 +1,5 @@
 import * as SDCId from 'scandit-web-datacapture-id';
-// import html2canvas from 'html2canvas';
-// import jsPDF from 'jspdf';
+import jsPDF from 'jspdf';
 
 export enum Action {
   SWITCH_MODE = 'SWITCH_MODE',
@@ -218,361 +217,776 @@ export function showResult(
     result.append(faceImage);
   }
 
-  // Common fields
-  result.append(
-    getFragmentForFields([
-      ['First Name', capturedId.firstName],
-      ['Last Name', capturedId.lastName],
-      ['Full Name', capturedId.fullName],
-      ['Sex', capturedId.sex],
-      ['Date of Birth', capturedId.dateOfBirth],
-      ['Age', capturedId.age],
-      ['Nationality', capturedId.nationality],
-      ['Address', capturedId.address],
-      ['Document Type', capturedId.documentType],
-      ['Issuing Country ISO', capturedId.issuingCountryIso],
-      ['Issuing Country', capturedId.issuingCountry],
-      ['Document Number', capturedId.documentNumber],
-      ['Document Additional Number', capturedId.documentAdditionalNumber],
-      ['Date of Expiry', capturedId.dateOfExpiry],
-      ['Is Expired', capturedId.isExpired],
-      ['Date of Issue', capturedId.dateOfIssue],
-    ])
-  );
+  const fields: [string, unknown][] = [];
+  if (capturedId.firstName) fields.push(['First Name', capturedId.firstName]);
+  if (capturedId.lastName) fields.push(['Last Name', capturedId.lastName]);
+  if (capturedId.fullName) fields.push(['Full Name', capturedId.fullName]);
+  if (capturedId.sex) fields.push(['Sex', capturedId.sex]);
+  if (capturedId.dateOfBirth)
+    fields.push(['Date of Birth', capturedId.dateOfBirth]);
+  if (capturedId.age) fields.push(['Age', capturedId.age]);
+  if (capturedId.nationality)
+    fields.push(['Nationality', capturedId.nationality]);
+  if (capturedId.address) fields.push(['Address', capturedId.address]);
+  if (capturedId.documentType)
+    fields.push(['Document Type', capturedId.documentType]);
+  if (capturedId.issuingCountryIso)
+    fields.push(['Issuing Country ISO', capturedId.issuingCountryIso]);
+  if (capturedId.issuingCountry)
+    fields.push(['Issuing Country', capturedId.issuingCountry]);
+  if (capturedId.documentNumber)
+    fields.push(['Document Number', capturedId.documentNumber]);
+  if (capturedId.documentAdditionalNumber)
+    fields.push([
+      'Document Additional Number',
+      capturedId.documentAdditionalNumber,
+    ]);
+  if (capturedId.dateOfExpiry)
+    fields.push(['Date of Expiry', capturedId.dateOfExpiry]);
+  if (capturedId.isExpired) fields.push(['Is Expired', capturedId.isExpired]);
+  if (capturedId.dateOfIssue)
+    fields.push(['Date of Issue', capturedId.dateOfIssue]);
+
+  if (fields.length) result.append(getFragmentForFields(fields));
 
   if (capturedId.aamvaBarcodeResult) {
     const data = capturedId.aamvaBarcodeResult;
-    result.append(
-      getFragmentForFields([
-        ['AAMVA Version', data.aamvaVersion],
-        ['Is Real ID', data.isRealId],
-        ['Alias Family Name', data.aliasFamilyName],
-        ['Alias Given Name', data.aliasGivenName],
-        ['Alias Suffix Name', data.aliasSuffixName],
-        ['Driver Name Prefix', data.driverNamePrefix],
-        ['Driver Name Suffix', data.driverNameSuffix],
-        ['Endorsements Code', data.endorsementsCode],
-        ['Eye Color', data.eyeColor],
-        ['First Name Truncation', data.firstNameTruncation],
-        ['Hair Color', data.hairColor],
-        ['Height CM', data.heightCm],
-        ['Height Inch', data.heightInch],
-        ['IIN', data.IIN],
-        ['Issuing Jurisdiction', data.issuingJurisdiction],
-        ['Issuing Jurisdiction ISO', data.issuingJurisdictionIso],
-        ['Jurisdiction Version', data.jurisdictionVersion],
-        ['Last Name Truncation', data.lastNameTruncation],
-        ['First Name Without Middle Name', data.firstNameWithoutMiddleName],
-        ['Middle Name', data.middleName],
-        ['Middle Name Truncation', data.middleNameTruncation],
-        ['Place Of Birth', data.placeOfBirth],
-        ['Race', data.race],
-        ['Restrictions Code', data.restrictionsCode],
-        ['Vehicle Class', data.vehicleClass],
-        ['Weight Kg', data.weightKg],
-        ['Weight Lbs', data.weightLbs],
-        ['Card Revision Date', data.cardRevisionDate],
-        ['Document Discriminator Number', data.documentDiscriminatorNumber],
-        ['Barcode Data Elements', data.barcodeDataElements],
-      ])
-    );
+
+    const aamvaBarcodeResultFields: [string, unknown][] = [];
+
+    if (data.aamvaVersion)
+      aamvaBarcodeResultFields.push(['AAMVA Version', data.aamvaVersion]);
+    if (data.isRealId)
+      aamvaBarcodeResultFields.push(['Is Real ID', data.isRealId]);
+    if (data.aliasFamilyName)
+      aamvaBarcodeResultFields.push([
+        'Alias Family Name',
+        data.aliasFamilyName,
+      ]);
+    if (data.aliasGivenName)
+      aamvaBarcodeResultFields.push(['Alias Given Name', data.aliasGivenName]);
+    if (data.aliasSuffixName)
+      aamvaBarcodeResultFields.push([
+        'Alias Suffix Name',
+        data.aliasSuffixName,
+      ]);
+    if (data.driverNamePrefix)
+      aamvaBarcodeResultFields.push([
+        'Driver Name Prefix',
+        data.driverNamePrefix,
+      ]);
+    if (data.driverNameSuffix)
+      aamvaBarcodeResultFields.push([
+        'Driver Name Suffix',
+        data.driverNameSuffix,
+      ]);
+    if (data.endorsementsCode)
+      aamvaBarcodeResultFields.push([
+        'Endorsements Code',
+        data.endorsementsCode,
+      ]);
+    if (data.eyeColor)
+      aamvaBarcodeResultFields.push(['Eye Color', data.eyeColor]);
+    if (data.firstNameTruncation)
+      aamvaBarcodeResultFields.push([
+        'First Name Truncation',
+        data.firstNameTruncation,
+      ]);
+    if (data.hairColor)
+      aamvaBarcodeResultFields.push(['Hair Color', data.hairColor]);
+    if (data.heightCm)
+      aamvaBarcodeResultFields.push(['Height CM', data.heightCm]);
+    if (data.heightInch)
+      aamvaBarcodeResultFields.push(['Height Inch', data.heightInch]);
+    if (data.IIN) aamvaBarcodeResultFields.push(['IIN', data.IIN]);
+    if (data.issuingJurisdiction)
+      aamvaBarcodeResultFields.push([
+        'Issuing Jurisdiction',
+        data.issuingJurisdiction,
+      ]);
+    if (data.issuingJurisdictionIso)
+      aamvaBarcodeResultFields.push([
+        'Issuing Jurisdiction ISO',
+        data.issuingJurisdictionIso,
+      ]);
+    if (data.jurisdictionVersion)
+      aamvaBarcodeResultFields.push([
+        'Jurisdiction Version',
+        data.jurisdictionVersion,
+      ]);
+    if (data.lastNameTruncation)
+      aamvaBarcodeResultFields.push([
+        'Last Name Truncation',
+        data.lastNameTruncation,
+      ]);
+    if (data.firstNameWithoutMiddleName)
+      aamvaBarcodeResultFields.push([
+        'First Name Without Middle Name',
+        data.firstNameWithoutMiddleName,
+      ]);
+    if (data.middleName)
+      aamvaBarcodeResultFields.push(['Middle Name', data.middleName]);
+    if (data.middleNameTruncation)
+      aamvaBarcodeResultFields.push([
+        'Middle Name Truncation',
+        data.middleNameTruncation,
+      ]);
+    if (data.placeOfBirth)
+      aamvaBarcodeResultFields.push(['Place Of Birth', data.placeOfBirth]);
+    if (data.race) aamvaBarcodeResultFields.push(['Race', data.race]);
+    if (data.restrictionsCode)
+      aamvaBarcodeResultFields.push([
+        'Restrictions Code',
+        data.restrictionsCode,
+      ]);
+    if (data.vehicleClass)
+      aamvaBarcodeResultFields.push(['Vehicle Class', data.vehicleClass]);
+    if (data.weightKg)
+      aamvaBarcodeResultFields.push(['Weight Kg', data.weightKg]);
+    if (data.weightLbs)
+      aamvaBarcodeResultFields.push(['Weight Lbs', data.weightLbs]);
+    if (data.cardRevisionDate)
+      aamvaBarcodeResultFields.push([
+        'Card Revision Date',
+        data.cardRevisionDate,
+      ]);
+    if (data.documentDiscriminatorNumber)
+      aamvaBarcodeResultFields.push([
+        'Document Discriminator Number',
+        data.documentDiscriminatorNumber,
+      ]);
+    if (data.barcodeDataElements)
+      aamvaBarcodeResultFields.push([
+        'Barcode Data Elements',
+        data.barcodeDataElements,
+      ]);
+
+    if (aamvaBarcodeResultFields.length)
+      result.append(getFragmentForFields(aamvaBarcodeResultFields));
   }
 
   if (capturedId.argentinaIdBarcodeResult) {
-    result.append(
-      getFragmentForFields([
-        [
-          'Personal Id Number',
-          capturedId.argentinaIdBarcodeResult.personalIdNumber,
-        ],
-        ['Document Copy', capturedId.argentinaIdBarcodeResult.documentCopy],
-      ])
-    );
+    const argentinaIdBarcodeResultFields: [string, unknown][] = [];
+
+    if (capturedId.argentinaIdBarcodeResult.personalIdNumber)
+      argentinaIdBarcodeResultFields.push([
+        'Personal Id Number',
+        capturedId.argentinaIdBarcodeResult.personalIdNumber,
+      ]);
+    if (capturedId.argentinaIdBarcodeResult.documentCopy)
+      argentinaIdBarcodeResultFields.push([
+        'Document Copy',
+        capturedId.argentinaIdBarcodeResult.documentCopy,
+      ]);
+
+    if (argentinaIdBarcodeResultFields.length)
+      result.append(getFragmentForFields(argentinaIdBarcodeResultFields));
   }
 
   if (capturedId.apecBusinessTravelCardMrzResult) {
     const data = capturedId.apecBusinessTravelCardMrzResult;
-    result.append(
-      getFragmentForFields([
-        ['Document Code', data.documentCode],
-        ['Captured MRZ', data.capturedMrz],
-        ['Passport Number', data.passportNumber],
-        ['Passport Issuer ISO', data.passportIssuerIso],
-        ['Passport Date of Expiry', data.passportDateOfExpiry],
-      ])
-    );
+
+    const apecBusinessTravelCardMrzResultFields: [string, unknown][] = [];
+
+    if (data.documentCode)
+      apecBusinessTravelCardMrzResultFields.push([
+        'Document Code',
+        data.documentCode,
+      ]);
+    if (data.capturedMrz)
+      apecBusinessTravelCardMrzResultFields.push([
+        'Captured MRZ',
+        data.capturedMrz,
+      ]);
+    if (data.passportNumber)
+      apecBusinessTravelCardMrzResultFields.push([
+        'Passport Number',
+        data.passportNumber,
+      ]);
+    if (data.passportIssuerIso)
+      apecBusinessTravelCardMrzResultFields.push([
+        'Passport Issuer ISO',
+        data.passportIssuerIso,
+      ]);
+    if (data.passportDateOfExpiry)
+      apecBusinessTravelCardMrzResultFields.push([
+        'Passport Date of Expiry',
+        data.passportDateOfExpiry,
+      ]);
+
+    if (apecBusinessTravelCardMrzResultFields.length)
+      result.append(
+        getFragmentForFields(apecBusinessTravelCardMrzResultFields)
+      );
   }
 
   if (capturedId.chinaMainlandTravelPermitMrzResult) {
     const data = capturedId.chinaMainlandTravelPermitMrzResult;
-    result.append(
-      getFragmentForFields([
-        ['Document Code', data.documentCode],
-        ['Captured MRZ', data.capturedMrz],
-        ['Personal ID Number', data.personalIdNumber],
-        ['Renewal times', data.renewalTimes],
-        ['Full Name Simplified Chinese', data.fullNameSimplifiedChinese],
-        [
-          'Omitted Character Count In GBK Name',
-          data.omittedCharacterCountInGBKName,
-        ],
-        ['Omitted Name Count', data.omittedNameCount],
-        ['Issuing Authority Code', data.issuingAuthorityCode],
-      ])
-    );
+
+    const chinaMainlandTravelPermitMrzResultFields: [string, unknown][] = [];
+
+    if (data.documentCode)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Document Code',
+        data.documentCode,
+      ]);
+    if (data.capturedMrz)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Captured MRZ',
+        data.capturedMrz,
+      ]);
+    if (data.personalIdNumber)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Personal ID Number',
+        data.personalIdNumber,
+      ]);
+    if (data.renewalTimes)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Renewal times',
+        data.renewalTimes,
+      ]);
+    if (data.fullNameSimplifiedChinese)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Full Name Simplified Chinese',
+        data.fullNameSimplifiedChinese,
+      ]);
+    if (data.omittedCharacterCountInGBKName)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Omitted Character Count In GBK Name',
+        data.omittedCharacterCountInGBKName,
+      ]);
+    if (data.omittedNameCount)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Omitted Name Count',
+        data.omittedNameCount,
+      ]);
+    if (data.issuingAuthorityCode)
+      chinaMainlandTravelPermitMrzResultFields.push([
+        'Issuing Authority Code',
+        data.issuingAuthorityCode,
+      ]);
+
+    if (chinaMainlandTravelPermitMrzResultFields.length)
+      result.append(
+        getFragmentForFields(chinaMainlandTravelPermitMrzResultFields)
+      );
   }
 
   if (capturedId.chinaExitEntryPermitMrzResult) {
-    result.append(
-      getFragmentForFields([
-        [
-          'Document Code',
-          capturedId.chinaExitEntryPermitMrzResult.documentCode,
-        ],
-        ['Captured MRZ', capturedId.chinaExitEntryPermitMrzResult.capturedMrz],
-      ])
-    );
+    const chinaExitEntryPermitMrzResultFields: [string, unknown][] = [];
+
+    if (capturedId.chinaExitEntryPermitMrzResult.documentCode)
+      chinaExitEntryPermitMrzResultFields.push([
+        'Document Code',
+        capturedId.chinaExitEntryPermitMrzResult.documentCode,
+      ]);
+    if (capturedId.chinaExitEntryPermitMrzResult.capturedMrz)
+      chinaExitEntryPermitMrzResultFields.push([
+        'Captured MRZ',
+        capturedId.chinaExitEntryPermitMrzResult.capturedMrz,
+      ]);
+
+    if (chinaExitEntryPermitMrzResultFields.length)
+      result.append(getFragmentForFields(chinaExitEntryPermitMrzResultFields));
   }
 
   if (capturedId.chinaOneWayPermitFrontMrzResult) {
     const data = capturedId.chinaOneWayPermitFrontMrzResult;
-    result.append(
-      getFragmentForFields([
-        ['Document Code', data.documentCode],
-        ['Full Name in Simplified Chinese', data.fullNameSimplifiedChinese],
-        ['Captured MRZ', data.capturedMrz],
-      ])
-    );
+
+    const chinaOneWayPermitFrontMrzResultFields: [string, unknown][] = [];
+
+    if (data.documentCode)
+      chinaOneWayPermitFrontMrzResultFields.push([
+        'Document Code',
+        data.documentCode,
+      ]);
+    if (data.fullNameSimplifiedChinese)
+      chinaOneWayPermitFrontMrzResultFields.push([
+        'Full Name in Simplified Chinese',
+        data.fullNameSimplifiedChinese,
+      ]);
+    if (data.capturedMrz)
+      chinaOneWayPermitFrontMrzResultFields.push([
+        'Captured MRZ',
+        data.capturedMrz,
+      ]);
+
+    if (chinaOneWayPermitFrontMrzResultFields.length)
+      result.append(
+        getFragmentForFields(chinaOneWayPermitFrontMrzResultFields)
+      );
   }
 
   if (capturedId.chinaOneWayPermitBackMrzResult) {
     const data = capturedId.chinaOneWayPermitBackMrzResult;
-    result.append(
-      getFragmentForFields([
-        ['Document Code', data.documentCode],
-        ['Names Are Truncated', data.namesAreTruncated],
-        ['Captured MRZ', data.capturedMrz],
-      ])
-    );
+
+    const chinaOneWayPermitBackMrzResultFields: [string, unknown][] = [];
+
+    if (data.documentCode)
+      chinaOneWayPermitBackMrzResultFields.push([
+        'Document Code',
+        data.documentCode,
+      ]);
+    if (data.namesAreTruncated)
+      chinaOneWayPermitBackMrzResultFields.push([
+        'Names Are Truncated',
+        data.namesAreTruncated,
+      ]);
+    if (data.capturedMrz)
+      chinaOneWayPermitBackMrzResultFields.push([
+        'Captured MRZ',
+        data.capturedMrz,
+      ]);
+
+    if (chinaOneWayPermitBackMrzResultFields.length)
+      result.append(getFragmentForFields(chinaOneWayPermitBackMrzResultFields));
   }
 
   if (capturedId.colombiaIdBarcodeResult) {
-    result.append(
-      getFragmentForFields([
-        ['Blood Type', capturedId.colombiaIdBarcodeResult.bloodType],
-      ])
-    );
+    if (capturedId.colombiaIdBarcodeResult.bloodType) {
+      result.append(
+        getFragmentForFields([
+          ['Blood Type', capturedId.colombiaIdBarcodeResult.bloodType],
+        ])
+      );
+    }
   }
 
   if (capturedId.colombiaDlBarcodeResult) {
-    result.append(
-      getFragmentForFields([
-        [
-          'Identification Type',
-          capturedId.colombiaDlBarcodeResult.identificationType,
-        ],
-        ['Categories', capturedId.colombiaDlBarcodeResult.categories],
-      ])
-    );
+    const colombiaDlBarcodeResultFields: [string, unknown][] = [];
+
+    if (capturedId.colombiaDlBarcodeResult.identificationType)
+      colombiaDlBarcodeResultFields.push([
+        'Identification Type',
+        capturedId.colombiaDlBarcodeResult.identificationType,
+      ]);
+    if (capturedId.colombiaDlBarcodeResult.categories)
+      colombiaDlBarcodeResultFields.push([
+        'Categories',
+        capturedId.colombiaDlBarcodeResult.categories,
+      ]);
+
+    if (colombiaDlBarcodeResultFields.length)
+      result.append(getFragmentForFields(colombiaDlBarcodeResultFields));
   }
 
   if (capturedId.mrzResult) {
     const data = capturedId.mrzResult;
-    result.append(
-      getFragmentForFields([
-        ['Document Code', data.documentCode],
-        ['Names Are Truncated', data.namesAreTruncated],
-        ['Optional', data.optional],
-        ['Optional1', data.optional1],
-        ['Captured Mrz', data.capturedMrz],
-      ])
-    );
+    const mrzResultFields: [string, unknown][] = [];
+
+    if (data.documentCode)
+      mrzResultFields.push(['Document Code', data.documentCode]);
+    if (data.namesAreTruncated)
+      mrzResultFields.push(['Names Are Truncated', data.namesAreTruncated]);
+    if (data.optional) mrzResultFields.push(['Optional', data.optional]);
+    if (data.optional1) mrzResultFields.push(['Optional1', data.optional1]);
+    if (data.capturedMrz)
+      mrzResultFields.push(['Captured Mrz', data.capturedMrz]);
+
+    if (mrzResultFields.length)
+      result.append(getFragmentForFields(mrzResultFields));
   }
 
   if (capturedId.usVisaVIZResult) {
     const data = capturedId.usVisaVIZResult;
-    result.append(
-      getFragmentForFields([
-        ['Visa Number', data.visaNumber],
-        ['Passport Number', data.passportNumber],
-      ])
-    );
+
+    const usVisaVIZResultFields: [string, unknown][] = [];
+
+    if (data.visaNumber)
+      usVisaVIZResultFields.push(['Visa Number', data.visaNumber]);
+    if (data.passportNumber)
+      usVisaVIZResultFields.push(['Passport Number', data.passportNumber]);
+
+    if (usVisaVIZResultFields.length)
+      result.append(getFragmentForFields(usVisaVIZResultFields));
   }
 
   if (capturedId.southAfricaIdBarcodeResult) {
     const data = capturedId.southAfricaIdBarcodeResult;
-    result.append(
-      getFragmentForFields([
-        ['Country Of Birth', data.countryOfBirth],
-        ['Country Of Birth Iso', data.countryOfBirthIso],
-        ['Citizenship Status', data.citizenshipStatus],
-        ['Personal Id Number', data.personalIdNumber],
-      ])
-    );
+
+    const southAfricaIdBarcodeResultFields: [string, unknown][] = [];
+
+    if (data.countryOfBirth)
+      southAfricaIdBarcodeResultFields.push([
+        'Country Of Birth',
+        data.countryOfBirth,
+      ]);
+    if (data.countryOfBirthIso)
+      southAfricaIdBarcodeResultFields.push([
+        'Country Of Birth Iso',
+        data.countryOfBirthIso,
+      ]);
+    if (data.citizenshipStatus)
+      southAfricaIdBarcodeResultFields.push([
+        'Citizenship Status',
+        data.citizenshipStatus,
+      ]);
+    if (data.personalIdNumber)
+      southAfricaIdBarcodeResultFields.push([
+        'Personal Id Number',
+        data.personalIdNumber,
+      ]);
+
+    if (southAfricaIdBarcodeResultFields.length)
+      result.append(getFragmentForFields(southAfricaIdBarcodeResultFields));
   }
 
   if (capturedId.southAfricaDlBarcodeResult) {
     const data = capturedId.southAfricaDlBarcodeResult;
-    result.append(
-      getFragmentForFields([
-        ['Version', data.version],
-        ['License Country Of Issue', data.licenseCountryOfIssue],
-        ['Personal Id Number', data.personalIdNumber],
-        ['Personal Id Number Type', data.personalIdNumberType],
-        ['Document Copy', data.documentCopy],
-        ['Driver Restriction Codes', data.driverRestrictionCodes],
-        ['Professional Driving Permit', data.professionalDrivingPermit],
-        ['Vehicle Restrictions', data.vehicleRestrictions],
-      ])
-    );
+
+    const southAfricaDlBarcodeResultFields: [string, unknown][] = [];
+
+    if (data.version)
+      southAfricaDlBarcodeResultFields.push(['Version', data.version]);
+    if (data.licenseCountryOfIssue)
+      southAfricaDlBarcodeResultFields.push([
+        'License Country Of Issue',
+        data.licenseCountryOfIssue,
+      ]);
+    if (data.personalIdNumber)
+      southAfricaDlBarcodeResultFields.push([
+        'Personal Id Number',
+        data.personalIdNumber,
+      ]);
+    if (data.personalIdNumberType)
+      southAfricaDlBarcodeResultFields.push([
+        'Personal Id Number Type',
+        data.personalIdNumberType,
+      ]);
+    if (data.documentCopy)
+      southAfricaDlBarcodeResultFields.push([
+        'Document Copy',
+        data.documentCopy,
+      ]);
+    if (data.driverRestrictionCodes)
+      southAfricaDlBarcodeResultFields.push([
+        'Driver Restriction Codes',
+        data.driverRestrictionCodes,
+      ]);
+    if (data.professionalDrivingPermit)
+      southAfricaDlBarcodeResultFields.push([
+        'Professional Driving Permit',
+        data.professionalDrivingPermit,
+      ]);
+    if (data.vehicleRestrictions)
+      southAfricaDlBarcodeResultFields.push([
+        'Vehicle Restrictions',
+        data.vehicleRestrictions,
+      ]);
+
+    if (southAfricaDlBarcodeResultFields.length)
+      result.append(getFragmentForFields(southAfricaDlBarcodeResultFields));
   }
 
   if (capturedId.usUniformedServicesBarcodeResult) {
     const data = capturedId.usUniformedServicesBarcodeResult;
-    result.append(
-      getFragmentForFields([
-        ['Blood Type', data.bloodType],
-        ['Branch Of Service', data.branchOfService],
-        ['Champus Effective Date', data.champusEffectiveDate],
-        ['Champus Expiry Date', data.champusExpiryDate],
-        ['Civilian Health Care Flag Code', data.civilianHealthCareFlagCode],
-        [
-          'Civilian Health Care Flag Description',
-          data.civilianHealthCareFlagDescription,
-        ],
-        ['Commissary Flag Code', data.commissaryFlagCode],
-        ['Commissary Flag Description', data.commissaryFlagDescription],
-        ['Deers Dependent Suffix Code', data.deersDependentSuffixCode],
-        [
-          'Deers Dependent Suffix Description',
-          data.deersDependentSuffixDescription,
-        ],
-        ['Direct Care Flag Code', data.directCareFlagCode],
-        ['Direct Care Flag Description', data.directCareFlagDescription],
-        ['Exchange Flag Code', data.exchangeFlagCode],
-        ['Exchange Flag Description', data.exchangeFlagDescription],
-        ['Eye Color', data.eyeColor],
-        ['Family Sequence Number', data.familySequenceNumber],
-        ['Form Number', data.formNumber],
-        ['Geneva Convention Category', data.genevaConventionCategory],
-        ['Hair Color', data.hairColor],
-        ['Height', data.height],
-        ['Jpeg Data', data.jpegData],
-        ['Mwr Flag Code', data.mwrFlagCode],
-        ['Mwr Flag Description', data.mwrFlagDescription],
-        ['Pay Grade', data.payGrade],
-        ['Person Designator Document', data.personDesignatorDocument],
-        ['Rank', data.rank],
-        ['Relationship Code', data.relationshipCode],
-        ['Relationship Description', data.relationshipDescription],
-        ['Security Code', data.securityCode],
-        ['Service Code', data.serviceCode],
-        ['Sponsor Flag', data.sponsorFlag],
-        ['Sponsor Name', data.sponsorName],
-        [
-          'Sponsor Person Designator Identifier',
-          data.sponsorPersonDesignatorIdentifier,
-        ],
-        ['Status Code', data.statusCode],
-        ['Status Code Description', data.statusCodeDescription],
-        ['Version', data.version],
-        ['Weight', data.weight],
-      ])
-    );
+
+    const usUniformedServicesBarcodeResultFields: [string, unknown][] = [];
+
+    if (data.bloodType)
+      usUniformedServicesBarcodeResultFields.push([
+        'Blood Type',
+        data.bloodType,
+      ]);
+    if (data.branchOfService)
+      usUniformedServicesBarcodeResultFields.push([
+        'Branch Of Service',
+        data.branchOfService,
+      ]);
+    if (data.champusEffectiveDate)
+      usUniformedServicesBarcodeResultFields.push([
+        'Champus Effective Date',
+        data.champusEffectiveDate,
+      ]);
+    if (data.champusExpiryDate)
+      usUniformedServicesBarcodeResultFields.push([
+        'Champus Expiry Date',
+        data.champusExpiryDate,
+      ]);
+    if (data.civilianHealthCareFlagCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Civilian Health Care Flag Code',
+        data.civilianHealthCareFlagCode,
+      ]);
+    if (data.civilianHealthCareFlagDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Civilian Health Care Flag Description',
+        data.civilianHealthCareFlagDescription,
+      ]);
+    if (data.commissaryFlagCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Commissary Flag Code',
+        data.commissaryFlagCode,
+      ]);
+    if (data.commissaryFlagDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Commissary Flag Description',
+        data.commissaryFlagDescription,
+      ]);
+    if (data.deersDependentSuffixCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Deers Dependent Suffix Code',
+        data.deersDependentSuffixCode,
+      ]);
+    if (data.deersDependentSuffixDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Deers Dependent Suffix Description',
+        data.deersDependentSuffixDescription,
+      ]);
+    if (data.directCareFlagCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Direct Care Flag Code',
+        data.directCareFlagCode,
+      ]);
+    if (data.directCareFlagDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Direct Care Flag Description',
+        data.directCareFlagDescription,
+      ]);
+    if (data.exchangeFlagCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Exchange Flag Code',
+        data.exchangeFlagCode,
+      ]);
+    if (data.exchangeFlagDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Exchange Flag Description',
+        data.exchangeFlagDescription,
+      ]);
+    if (data.eyeColor)
+      usUniformedServicesBarcodeResultFields.push(['Eye Color', data.eyeColor]);
+    if (data.familySequenceNumber)
+      usUniformedServicesBarcodeResultFields.push([
+        'Family Sequence Number',
+        data.familySequenceNumber,
+      ]);
+    if (data.formNumber)
+      usUniformedServicesBarcodeResultFields.push([
+        'Form Number',
+        data.formNumber,
+      ]);
+    if (data.genevaConventionCategory)
+      usUniformedServicesBarcodeResultFields.push([
+        'Geneva Convention Category',
+        data.genevaConventionCategory,
+      ]);
+    if (data.hairColor)
+      usUniformedServicesBarcodeResultFields.push([
+        'Hair Color',
+        data.hairColor,
+      ]);
+    if (data.height)
+      usUniformedServicesBarcodeResultFields.push(['Height', data.height]);
+    if (data.jpegData)
+      usUniformedServicesBarcodeResultFields.push(['Jpeg Data', data.jpegData]);
+    if (data.mwrFlagCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Mwr Flag Code',
+        data.mwrFlagCode,
+      ]);
+    if (data.mwrFlagDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Mwr Flag Description',
+        data.mwrFlagDescription,
+      ]);
+    if (data.payGrade)
+      usUniformedServicesBarcodeResultFields.push(['Pay Grade', data.payGrade]);
+    if (data.personDesignatorDocument)
+      usUniformedServicesBarcodeResultFields.push([
+        'Person Designator Document',
+        data.personDesignatorDocument,
+      ]);
+    if (data.rank)
+      usUniformedServicesBarcodeResultFields.push(['Rank', data.rank]);
+    if (data.relationshipCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Relationship Code',
+        data.relationshipCode,
+      ]);
+    if (data.relationshipDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Relationship Description',
+        data.relationshipDescription,
+      ]);
+    if (data.securityCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Security Code',
+        data.securityCode,
+      ]);
+    if (data.serviceCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Service Code',
+        data.serviceCode,
+      ]);
+    if (data.sponsorFlag)
+      usUniformedServicesBarcodeResultFields.push([
+        'Sponsor Flag',
+        data.sponsorFlag,
+      ]);
+    if (data.sponsorName)
+      usUniformedServicesBarcodeResultFields.push([
+        'Sponsor Name',
+        data.sponsorName,
+      ]);
+    if (data.sponsorPersonDesignatorIdentifier)
+      usUniformedServicesBarcodeResultFields.push([
+        'Sponsor Person Designator Identifier',
+        data.sponsorPersonDesignatorIdentifier,
+      ]);
+    if (data.statusCode)
+      usUniformedServicesBarcodeResultFields.push([
+        'Status Code',
+        data.statusCode,
+      ]);
+    if (data.statusCodeDescription)
+      usUniformedServicesBarcodeResultFields.push([
+        'Status Code Description',
+        data.statusCodeDescription,
+      ]);
+    if (data.version)
+      usUniformedServicesBarcodeResultFields.push(['Version', data.version]);
+    if (data.weight)
+      usUniformedServicesBarcodeResultFields.push(['Weight', data.weight]);
+
+    if (usUniformedServicesBarcodeResultFields.length)
+      result.append(
+        getFragmentForFields(usUniformedServicesBarcodeResultFields)
+      );
   }
 
   if (capturedId.commonAccessCardBarcodeResult) {
     const data = capturedId.commonAccessCardBarcodeResult;
-    result.append(
-      getFragmentForFields([
-        ['version', data.version],
-        ['person designator document', data.personDesignatorDocument],
-        ['person designator type code', data.personDesignatorTypeCode],
-        ['edi person identifier', data.ediPersonIdentifier],
-        ['personnel category code', data.personnelCategoryCode],
-        ['branch of service', data.branchOfService],
-        [
-          'personnel entitlement condition type',
-          data.personnelEntitlementConditionType,
-        ],
-        ['rank', data.rank],
-        ['play pan code', data.payPlanCode],
-        ['play pan grade code', data.payPlanGradeCode],
-        ['card instance identifier', data.cardInstanceIdentifier],
-        ['person middle initial', data.personMiddleInitial],
-      ])
-    );
+
+    const commonAccessCardBarcodeResultFields: [string, unknown][] = [];
+
+    if (data.version)
+      commonAccessCardBarcodeResultFields.push(['version', data.version]);
+    if (data.personDesignatorDocument)
+      commonAccessCardBarcodeResultFields.push([
+        'person designator document',
+        data.personDesignatorDocument,
+      ]);
+    if (data.personDesignatorTypeCode)
+      commonAccessCardBarcodeResultFields.push([
+        'person designator type code',
+        data.personDesignatorTypeCode,
+      ]);
+    if (data.ediPersonIdentifier)
+      commonAccessCardBarcodeResultFields.push([
+        'edi person identifier',
+        data.ediPersonIdentifier,
+      ]);
+    if (data.personnelCategoryCode)
+      commonAccessCardBarcodeResultFields.push([
+        'personnel category code',
+        data.personnelCategoryCode,
+      ]);
+    if (data.branchOfService)
+      commonAccessCardBarcodeResultFields.push([
+        'branch of service',
+        data.branchOfService,
+      ]);
+    if (data.personnelEntitlementConditionType)
+      commonAccessCardBarcodeResultFields.push([
+        'personnel entitlement condition type',
+        data.personnelEntitlementConditionType,
+      ]);
+    if (data.rank)
+      commonAccessCardBarcodeResultFields.push(['rank', data.rank]);
+    if (data.payPlanCode)
+      commonAccessCardBarcodeResultFields.push([
+        'play pan code',
+        data.payPlanCode,
+      ]);
+    if (data.payPlanGradeCode)
+      commonAccessCardBarcodeResultFields.push([
+        'play pan grade code',
+        data.payPlanGradeCode,
+      ]);
+    if (data.cardInstanceIdentifier)
+      commonAccessCardBarcodeResultFields.push([
+        'card instance identifier',
+        data.cardInstanceIdentifier,
+      ]);
+    if (data.personMiddleInitial)
+      commonAccessCardBarcodeResultFields.push([
+        'person middle initial',
+        data.personMiddleInitial,
+      ]);
+
+    if (commonAccessCardBarcodeResultFields.length)
+      result.append(getFragmentForFields(commonAccessCardBarcodeResultFields));
   }
 
   if (capturedId.vizResult) {
     const data = capturedId.vizResult;
-    result.append(
-      getFragmentForFields([
-        ['Additional Address Information', data.additionalAddressInformation],
-        ['Additional Name Information', data.additionalNameInformation],
-        ['Document Additional Number', data.documentAdditionalNumber],
-        ['Employer', data.employer],
-        ['Issuing Authority', data.issuingAuthority],
-        ['Issuing Jurisdiction', data.issuingJurisdiction],
-        ['Marital Status', data.maritalStatus],
-        ['Personal Id Number', data.personalIdNumber],
-        ['Place Of Birth', data.placeOfBirth],
-        ['Profession', data.profession],
-        ['Race', data.race],
-        ['Religion', data.religion],
-        ['Residential Status', data.residentialStatus],
-        ['Captured Sides', data.capturedSides],
-        ['Is Back Side Capture Supported', data.isBackSideCaptureSupported],
-      ])
-    );
+
+    const vizResultFields: [string, unknown][] = [];
+
+    if (data.additionalAddressInformation)
+      vizResultFields.push([
+        'Additional Address Information',
+        data.additionalAddressInformation,
+      ]);
+    if (data.additionalNameInformation)
+      vizResultFields.push([
+        'Additional Name Information',
+        data.additionalNameInformation,
+      ]);
+    if (data.documentAdditionalNumber)
+      vizResultFields.push([
+        'Document Additional Number',
+        data.documentAdditionalNumber,
+      ]);
+    if (data.employer) vizResultFields.push(['Employer', data.employer]);
+    if (data.issuingAuthority)
+      vizResultFields.push(['Issuing Authority', data.issuingAuthority]);
+    if (data.issuingJurisdiction)
+      vizResultFields.push(['Issuing Jurisdiction', data.issuingJurisdiction]);
+    if (data.maritalStatus)
+      vizResultFields.push(['Marital Status', data.maritalStatus]);
+    if (data.personalIdNumber)
+      vizResultFields.push(['Personal Id Number', data.personalIdNumber]);
+    if (data.placeOfBirth)
+      vizResultFields.push(['Place Of Birth', data.placeOfBirth]);
+    if (data.profession) vizResultFields.push(['Profession', data.profession]);
+    if (data.race) vizResultFields.push(['Race', data.race]);
+    if (data.religion) vizResultFields.push(['Religion', data.religion]);
+    if (data.residentialStatus)
+      vizResultFields.push(['Residential Status', data.residentialStatus]);
+    if (data.capturedSides)
+      vizResultFields.push(['Captured Sides', data.capturedSides]);
+    if (data.isBackSideCaptureSupported)
+      vizResultFields.push([
+        'Is Back Side Capture Supported',
+        data.isBackSideCaptureSupported,
+      ]);
+
+    if (vizResultFields.length)
+      result.append(getFragmentForFields(vizResultFields));
   }
 
   const printButton = elements.resultFooter.querySelector('button[print]')!;
   printButton.addEventListener('click', () => {
-    // const resultContentDiv = document.querySelector('#result-content');
-    // if (resultContentDiv) {
-    //   // Create a hidden div to hold the printable content
-    //   const printableContentDiv = document.createElement('div');
-    //   printableContentDiv.style.position = 'absolute';
-    //   printableContentDiv.style.left = '-9999px'; // Position off-screen
-    //   printableContentDiv.style.width = '100%'; // Ensure full width
-    //   document.body.appendChild(printableContentDiv);
+    const resultContentDiv: HTMLElement | null =
+      document.querySelector('#result-content');
+    if (resultContentDiv) {
+      const jsPdf: jsPDF = new jsPDF('p', 'pt', 'letter');
 
-    //   // Clone the content of result-content into the printable content div
-    //   printableContentDiv.appendChild(resultContentDiv.cloneNode(true));
-
-    //   // Use html2canvas to take a screenshot of the printable content
-    //   html2canvas(printableContentDiv, {
-    //     scale: 2, // Increase to get clearer image (optional)
-    //     scrollY: -window.scrollY, // Capture from top of the content
-    //   }).then((canvas) => {
-    //     // Remove the temporary printable content div from the DOM
-    //     document.body.removeChild(printableContentDiv);
-
-    //     // Set the PDF size and orientation
-    //     const pdf = new jsPDF('p', 'mm', 'a4'); // Portrait, millimeters, A4 size
-
-    //     // Calculate the printable area inside margins
-    //     const pdfWidth = pdf.internal.pageSize.getWidth();
-    //     const margin = 10; // Adjust your desired margin size in mm
-
-    //     const imgWidth = pdfWidth - margin * 2; // Subtract margins from width
-    //     const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
-
-    //     // Add the image (content) to the PDF with margins
-    //     pdf.addImage(
-    //       canvas.toDataURL('image/png'),
-    //       'PNG',
-    //       margin,
-    //       margin,
-    //       imgWidth,
-    //       imgHeight
-    //     );
-
-    //     // Save the PDF document
-    //     pdf.save('result.pdf');
-    //   });
-    // }
+      jsPdf.html(resultContentDiv, {
+        callback: function (jsPdf: jsPDF) {
+          jsPdf.save('result.pdf');
+        },
+        margin: [72, 72, 72, 72],
+        autoPaging: 'text',
+        html2canvas: {
+          allowTaint: true,
+          letterRendering: true,
+          logging: false,
+          scale: 0.8,
+        },
+      });
+    }
   });
   elements.resultHeader.textContent = header;
   elements.resultContent.textContent = '';

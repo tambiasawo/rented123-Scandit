@@ -18,6 +18,7 @@ import type {
   Translations as IdTranslations,
   AamvaBarcodeVerificationResult,
   AamvaVizBarcodeComparisonResult,
+  VizMrzComparisonResult,
 } from 'scandit-web-datacapture-id'; // typescript types
 import {
   IdCapture,
@@ -30,6 +31,7 @@ import {
   idCaptureLoader,
   AamvaBarcodeVerifier,
   AamvaVizBarcodeComparisonVerifier,
+  VizMrzComparisonVerifier,
 } from 'scandit-web-datacapture-id';
 import * as UI from './ui';
 
@@ -45,6 +47,7 @@ let camera: Camera;
 let currentMode: Mode;
 
 export interface VerificationResult {
+  // vizMrzComparisonResult: VizMrzComparisonResult | null; UNCOMMENT ONCE UPGRADE IS AVAILABLE OTHERWISE VERIFICATION WILL NOT WORK FOR OTHER DOCUMENTS AS WELL. tHIS WAS ADDED FOR PASSPORT VERIFICATION
   aamvaVizBarcodeComparisonResult: AamvaVizBarcodeComparisonResult | null;
   aamvaBarcodeVerificationResult: AamvaBarcodeVerificationResult | null;
 }
@@ -58,6 +61,12 @@ Localization.getInstance().update<IdTranslations | CoreTranslations>({
 
 // A map defining which document types we enable depending on the selected mode.
 const supportedDocumentsByMode: { [key in Mode]: IdDocumentType[] } = {
+  // mrz: [
+  //   IdDocumentType.VisaMRZ,
+  //   IdDocumentType.PassportMRZ,
+  //   IdDocumentType.SwissDLMRZ,
+  //   IdDocumentType.IdCardMRZ,
+  // ],
   viz: [
     IdDocumentType.DLVIZ,
     IdDocumentType.IdCardVIZ,
@@ -84,6 +93,7 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
   idCapture = await IdCapture.forContext(context, settings);
 
   // Create an instance of the verifier, to be used later when a document has been scanned
+  const mrzComparisonVerifier = VizMrzComparisonVerifier.create();
   const comparisonVerifier = AamvaVizBarcodeComparisonVerifier.create();
   const barcodeVerifier = await AamvaBarcodeVerifier.create(context);
 
@@ -93,6 +103,9 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
     console.log('🚀 ~ createIdCapture ~ capturedId:', capturedId);
 
     return {
+      // vizMrzComparisonResult: capturedId.mrzResult
+      //   ? await mrzComparisonVerifier.verify(capturedId)
+      //   : null,
       aamvaVizBarcodeComparisonResult: capturedId.vizResult
         ? await comparisonVerifier.verify(capturedId)
         : null,
@@ -124,9 +137,14 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
         await idCapture.setEnabled(true);
       } else {
         const {
+          // vizMrzComparisonResult,
           aamvaVizBarcodeComparisonResult,
           aamvaBarcodeVerificationResult,
         } = await verifyScannedId(capturedId);
+        // console.log(
+        //   '🚀 ~ createIdCapture ~ vizMrzComparisonResult:',
+        //   vizMrzComparisonResult
+        // );
         console.log(
           '🚀 ~ createIdCapture ~ aamvaVizBarcodeComparisonResult:',
           aamvaVizBarcodeComparisonResult
@@ -136,6 +154,7 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
           aamvaBarcodeVerificationResult
         );
         if (
+          // vizMrzComparisonResult?.checksPassed ||
           aamvaVizBarcodeComparisonResult?.checksPassed ||
           aamvaBarcodeVerificationResult?.allChecksPassed
         ) {
@@ -230,6 +249,7 @@ window.dispatchAction = async (...arguments_) => {
       break;
     case UI.Action.CLOSE_RESULT:
       UI.closeResults();
+      window.location.replace('https://rented123.com');
       await idCapture.setEnabled(true);
       break;
     case UI.Action.CLOSE_WARNING:

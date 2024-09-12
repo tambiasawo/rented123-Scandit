@@ -1,6 +1,4 @@
-# ID Capture Extended sample
-
-Advanced example of how to integrate ID capture into your application.
+# Scandit ID scan
 
 ## Prerequisites
 
@@ -30,7 +28,7 @@ npm run build
 npm run serve
 ```
 
-Open http://localhost:8888 and start scanning.
+Open http://localhost:8080 and start scanning.
 
 ## How to test the sample from any device
 
@@ -57,4 +55,4 @@ Start the development server:
 npm run dev
 ```
 
-Open http://localhost:8888 and start scanning.
+Open http://localhost:8080 and start scanning.
