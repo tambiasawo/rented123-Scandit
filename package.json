@@ -1,5 +1,5 @@
 {
-  "name": "Scandit ID Scan",
+  "name": "Scandit-ID-Scan",
   "displayName": "Scandit ID Scan",
   "version": "1.0.0",
   "author": "Scandit",
@@ -15,10 +15,11 @@
   },
   "dependencies": {
     "jspdf": "^2.5.1",
-    "scandit-web-datacapture-core": "6.24.0",
-    "scandit-web-datacapture-id": "6.24.0"
+    "scandit-web-datacapture-core": "6.27.1",
+    "scandit-web-datacapture-id": "6.27.1"
   },
   "devDependencies": {
+    "@types/node": "^22.5.4",
     "dotenv": "^16.0.3",
     "esbuild": "~0.15.18",
     "eslint": "^8.19.0",

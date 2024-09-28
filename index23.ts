@@ -33,8 +33,48 @@ import {
 } from 'scandit-web-datacapture-id';
 import * as UI from './ui';
 
-const LICENSE_KEY = '-- ENTER YOUR SCANDIT LICENSE KEY HERE --'; // will auto consider from env due to vite config setup
+const LICENSE_KEY = process.env.SCANDIT_LICENSE_KEY as string; //'-- ENTER YOUR SCANDIT LICENSE KEY HERE --'; // will auto consider from env due to vite config setup
 
+await configure({
+  licenseKey: LICENSE_KEY,
+  libraryLocation: new URL('library/engine/', document.baseURI).toString(),
+  moduleLoaders: [idCaptureLoader({ enableVIZDocuments: true })],
+});
+
+const view = new DataCaptureView();
+
+view.connectToElement(
+  document.getElementById('data-capture-view') as HTMLElement
+);
+view.showProgressBar();
+view.setProgressBarMessage('Loading ...');
+view.hideProgressBar();
+
+let context: DataCaptureContext = await DataCaptureContext.create();
+await view.setContext(context);
+
+context = await DataCaptureContext.create();
+
+const camera = Camera.default;
+await context.setFrameSource(camera);
+
+const cameraSettings = IdCapture.recommendedCameraSettings;
+
+// Depending on the use case further camera settings adjustments can be made here.
+
+if (camera != null) {
+  await camera.applySettings(cameraSettings);
+}
+const settings = new IdCaptureSettings();
+settings.supportedDocuments = [
+  IdDocumentType.IdCardVIZ,
+  IdDocumentType.AAMVABarcode,
+  IdDocumentType.DLVIZ,
+  IdDocumentType.PassportVIZ,
+];
+
+
+/* 
 type Mode = 'viz';
 
 let context: DataCaptureContext;
@@ -69,7 +109,7 @@ const supportedDocumentsByMode: { [key in Mode]: IdDocumentType[] } = {
     IdDocumentType.DLVIZ,
     IdDocumentType.IdCardVIZ,
     IdDocumentType.PassportVIZ,
-    //IdDocumentType.AAMVABarcode,
+    IdDocumentType.AAMVABarcode,
   ],
 };
 
@@ -114,7 +154,7 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
   }
 
   // Setup the listener to get notified about results
-  idCapture.addListener({
+ idCapture.addListener({
     didCaptureId: async (
       idCaptureInstance: IdCapture,
       session: IdCaptureSession
@@ -183,8 +223,26 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
         void idCapture.reset();
       }
     },
-  });
+  }); 
 
+  const idCaptureListener = {
+    didCaptureId: async (_: any, session: { newlyCapturedId: any; }) => {
+        const capturedId = session.newlyCapturedId;
+        const vizResult = capturedId.vizResult;
+
+        if (vizResult && vizResult.capturedSides === Scandit.SupportedSides.FrontAndBack) {
+            const result = await verifier.verify(session.newlyCapturedId);
+            if (result.checksPassed) {
+                // Nothing suspicious was detected.
+            } else {
+                // You may inspect the results of individual checks, if you wish:
+                if (result.datesOfBirthMatch.checkResult === ComparisonCheckResult.Failed) {
+                    // The holder’s date of birth from the front side does not match the one encoded in the barcode.
+                }
+            }
+        }
+    }
+}
   // Apply a new overlay for the newly created IdCapture mode
   await view.removeOverlay(overlay);
   overlay = await IdCaptureOverlay.withIdCaptureForView(idCapture, view);
@@ -210,17 +268,24 @@ async function run(): Promise<void> {
   view.hideProgressBar();
 
   // Create the context (it will use the license key passed to configure by default)
-  context = await DataCaptureContext.create();
+  const context = DataCaptureContext.create();
 
+  const verifier = AamvaVizBarcodeComparisonVerifier.create();
+  
+  const settings = new IdCaptureSettings()
+  settings.supportedDocuments = [IdDocumentType.DLVIZ]
+  settings.supportedSides = SupportedSides.FrontAndBack
+  
+  const idCapture = IdCapture.forContext(context, settings)
   await view.setContext(context);
 
   // Set the default camera as frame source. Apply the recommended settings from the IdCapture mode.
   camera = Camera.default;
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const settings: CameraSettings = IdCapture.recommendedCameraSettings;
+  /* const settings: CameraSettings = IdCapture.recommendedCameraSettings;
   await camera.applySettings(settings);
-  await context.setFrameSource(camera);
+  await context.setFrameSource(camera); 
 
   view.addControl(new CameraSwitchControl());
 
@@ -293,3 +358,4 @@ declare global {
     ) => void;
   }
 }
+ */

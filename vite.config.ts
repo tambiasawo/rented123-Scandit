@@ -66,7 +66,7 @@ export default defineConfig({
     },
   },
   envPrefix: 'SCANDIT',
-  plugins: [
+plugins: [
     viteStaticCopy({
       targets: [
         ...['core', 'id'].map((module) => ({

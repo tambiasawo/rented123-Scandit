@@ -45,7 +45,7 @@ Make sure you use the HTTP**S** tunnel because most of the browsers will deny pe
 
 Make sure SCANDIT_LICENSE_KEY is available in your environment, by either:
 
-- running `SCANDIT_LICENSE_KEY=<YOUR_LICENSE_KEY> npm run dev`
+- running `<YOUR_LICENSE_KEY> npm run dev`
 - placing your license key in a .env file at the root of the sample directory
 - or by inserting your license key into `index.ts`, replacing the placeholder `-- ENTER YOUR SCANDIT LICENSE KEY HERE --` with the key.
 
