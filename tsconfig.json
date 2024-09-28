@@ -8,5 +8,6 @@
     "strict": true,
     "noEmit": true
   },
-  "files": ["index23.ts", "ui.ts"]
+  "include": ["src/**/*", "global.d.ts","index.ts","ui.ts"], // Make sure to include your global file
+
 }
