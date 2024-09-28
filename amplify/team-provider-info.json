@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-scanditidscan-dev-5b2d5-authRole",
+      "UnauthRoleArn": "arn:aws:iam::905418415674:role/amplify-scanditidscan-dev-5b2d5-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::905418415674:role/amplify-scanditidscan-dev-5b2d5-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-scanditidscan-dev-5b2d5-deployment",
+      "UnauthRoleName": "amplify-scanditidscan-dev-5b2d5-unauthRole",
+      "StackName": "amplify-scanditidscan-dev-5b2d5",
+      "StackId": "arn:aws:cloudformation:us-east-1:905418415674:stack/amplify-scanditidscan-dev-5b2d5/3c484880-7d3a-11ef-af6f-0e521048e2cb",
+      "AmplifyAppId": "d37we4fgohiv56"
+    }
+  }
+}
