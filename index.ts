@@ -278,7 +278,7 @@ run().catch((error) => {
   alert(JSON.stringify(error, null, 2));
 });
 
-type ActionParameters<A extends UI.Action> = A extends UI.Action.SWITCH_MODE
+/* type ActionParameters<A extends UI.Action> = A extends UI.Action.SWITCH_MODE
   ? [mode: Mode, button: HTMLButtonElement]
   : A extends UI.Action.SKIP_BACKSIDE
     ? [CapturedId]
@@ -293,3 +293,4 @@ declare global {
     ) => void;
   }
 }
+ */
