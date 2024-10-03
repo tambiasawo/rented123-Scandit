@@ -1,3 +1,4 @@
+//ui
 import * as SDCId from 'scandit-web-datacapture-id';
 import jsPDF from 'jspdf';
 
