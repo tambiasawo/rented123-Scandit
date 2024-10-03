@@ -1,3 +1,5 @@
+//index.ts
+
 import {
   Camera,
   CameraSettings,
@@ -33,7 +35,8 @@ import {
 } from 'scandit-web-datacapture-id';
 import * as UI from './ui';
 
-const LICENSE_KEY ='ATeFPjoeEtL1CJWaY0IOQHUqNSa2FUaETG4ztzgL2noSaO4Q9jdbhEJOeOO3C7nN82w5otNeZXECAr7MtFaFEbxQF/07d/J28BmgMZ8/e/xLcVhcYUPPUiVSzWwQbAHstnqB89V4i/lXSeGVeSr5qCMp8wxpLVnf3HQddBNt2t7SV7hR+35Gv35K7r26DMFsFRffX+hP3YmHYlelo2/6vr5u1P3+ZfIJUmQ5PJNEP2/MXr/Zy1hPZ5p+0eX5XrI0HEX7ayxwyAJOQ+ONsnYm3WNtf6RyUCM8Z0+nmLUpcBoHZzgNvlWGGXdLfRl+Zxr0GSSYcJN46VPERWZ/LnAjWaM6gPukXj3MgBnVvMhL42iPMFGJPW5PDl9QP8hDfmvI3h9Kn/1Mv82XceTFuUEDNhYd1tF4TUiXL2GDhG4Emex9A239+UlE169uJRrUUwkpQiTmu7d/IPvRenmG833jrvpjb2tcCzM8J0Wdt094i1u7YaORr1hR/ooOXPDwBV8OUHh5yp1bwTs/A6MZQWV9YEl9bhAhaqNHvSgMmcROi8kaDhw+Infe0FRh+LtJYkmehXTN3AlXo9U7EiYVyEN0p4J5/SUbD6Bf1Sv5tj5+qGy+YnfhvGmuKvkMI4OLdki2mHFLAwxJ78BDeoDhQDoXxBZkPNk6fUXo6n+gKQMkfmEUTStfUVb+tH5rRQ3kBQ53PRds9bko5zRKf2J49l8MVNYDzZuujuQ9OTvBGRXVbCdsfyzLUo9GqRVLm3plkPueh2LzfY4zP/e9fOT0wKdFDVdEp5lUivyPwVeULTJEiDxc3S6AHvdTrPpeFuY4VqpxvMuednOJylHUumAXi4erxL36exvW7/VawSJjxbOTUyGOXBA27grFhBSUq4ASmx9T2SEE/DgsDfMqM18xzTeazSk9fqCcp5P6ORhLqHIsb4BEIZR8otIDYkbft0akbKZImqWbs20gCv5yXLGXe5i96kXbB3BWlN1/CWG4xmi/Rp76dRMbUubu4OW+nNBQuBWV93MSzcGQkTlOE7gc+9WXbzsXTfqWjsa0vYh1PIiA98VgVFvQlkTGHKQnEVsela1Q6TdBvL6zFpLBy01QisaQDtd1F5ct7b7E0/fX1dASY5n04mzB6nvFIoh2poPmxEF4bSJgA8ZI4gjrDMQXy1xpJLk+XcbH+G12sHI670Ym31nfM8LShgwpoA/a87QONPH0pytHuzemTB/3qvhTnNaAXz8jOxD8zLIF8fqkDYvUOamjQawFv0qWKxuFJkBo2YIdJ1Au32Ja9Nbe7NQB/CxpmJpvK0sV0FNYE9bxgKLEuhONbGoaP3q3nyNnkmW74PX7DDXGefQQYm/CpX8xRs2EkIcWjNH7NB7xiPQM+Q=='
+const DEV_LICENSE_KEY = import.meta.env.VITE_SCANDIT_DEV_LICENSE_KEY;
+const LICENSE_KEY = import.meta.env.VITE_SCANDIT_LICENSE_KEY;
 
 type Mode = 'viz';
 
@@ -46,6 +49,7 @@ let currentMode: Mode;
 
 export interface VerificationResult {
   // vizMrzComparisonResult: VizMrzComparisonResult | null; UNCOMMENT ONCE UPGRADE IS AVAILABLE OTHERWISE VERIFICATION WILL NOT WORK FOR OTHER DOCUMENTS AS WELL. tHIS WAS ADDED FOR PASSPORT VERIFICATION
+  //isExpired: boolean;
   aamvaVizBarcodeComparisonResult: AamvaVizBarcodeComparisonResult | null;
   aamvaBarcodeVerificationResult: AamvaBarcodeVerificationResult | null;
 }
@@ -94,11 +98,10 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
   const mrzComparisonVerifier = VizMrzComparisonVerifier.create();
   const comparisonVerifier = AamvaVizBarcodeComparisonVerifier.create();
   const barcodeVerifier = await AamvaBarcodeVerifier.create(context);
-
   async function verifyScannedId(
     capturedId: CapturedId
   ): Promise<VerificationResult> {
-    console.log('🚀 ~ createIdCapture ~ capturedId:', capturedId);
+    console.log('🚀 ~ verifyScannedId ~ capturedId:', capturedId);
 
     return {
       // vizMrzComparisonResult: capturedId.mrzResult
@@ -145,18 +148,6 @@ async function createIdCapture(settings: IdCaptureSettings): Promise<void> {
           aamvaVizBarcodeComparisonResult,
           aamvaBarcodeVerificationResult,
         });
-        // console.log(
-        //   '🚀 ~ createIdCapture ~ vizMrzComparisonResult:',
-        //   vizMrzComparisonResult
-        // );
-        console.log(
-          '🚀 ~ createIdCapture ~ aamvaVizBarcodeComparisonResult:',
-          aamvaVizBarcodeComparisonResult
-        );
-        console.log(
-          '🚀 ~ createIdCapture ~ aamvaBarcodeVerificationResult:',
-          aamvaBarcodeVerificationResult
-        );
         if (
           //vizMrzComparisonResult?.checksPassed ||
           aamvaVizBarcodeComparisonResult?.checksPassed ||
