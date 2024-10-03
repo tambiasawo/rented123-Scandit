@@ -8,6 +8,11 @@
     "strict": true,
     "noEmit": true
   },
-  "include": ["src/**/*", "global.d.ts","index.ts","ui.ts"], // Make sure to include your global file
-
+  "include": [
+    "src/**/*",
+    "global.d.ts",
+    "index.ts",
+    "ui_ignore.ts",
+    "vite-env.d.ts"
+  ] // Make sure to include your global file
 }
