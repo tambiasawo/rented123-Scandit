@@ -6,7 +6,9 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noEmit": true
+    "noEmit": true,
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["vite/client"]
   },
   "include": [
     "src/**/*",
