@@ -65,8 +65,8 @@ export default defineConfig({
       },
     },
   },
-  envPrefix: 'SCANDIT',
-plugins: [
+  envPrefix: 'VITE_',
+  plugins: [
     viteStaticCopy({
       targets: [
         ...['core', 'id'].map((module) => ({
@@ -84,7 +84,7 @@ plugins: [
       ],
     }),
     scandit({
-      licenseKey: process.env.SCANDIT_LICENSE_KEY ?? '',
+      licenseKey: process.env.VITE_SCANDIT_LICENSE_KEY ?? '',
       licenseKeyPlaceholder: '-- ENTER YOUR SCANDIT LICENSE KEY HERE --',
     }),
   ],
